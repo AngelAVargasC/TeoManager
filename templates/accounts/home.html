@@ -1,0 +1,637 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Control{% endblock %}
+
+{% block body_attrs %} data-dashboard="true"{% endblock %}
+
+{% block content %}
+
+<style>
+    :root {
+        --panel-bg: #fff;
+        --panel-shadow: 0 6px 32px rgba(37,99,235,0.10);
+        --panel-header-bg: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+        --panel-header-border: #e0e7ff;
+        --panel-title-color: #fff;
+        --panel-title-bg: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+        --panel-title-shadow: 0 2px 8px rgba(37,99,235,0.10);
+        --btn-main-bg: #2563eb;
+        --btn-main-color: #fff;
+        --btn-main-border: none;
+        --btn-main-hover-bg: #1746a2;
+        --btn-main-hover-shadow: 0 4px 16px rgba(37,99,235,0.18);
+        --profile-card-bg: #fff;
+        --profile-card-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        --profile-row-border: #f0f0f0;
+        --label-color: #666;
+        --badge-active-bg: #d1fae5;
+        --badge-active-color: #059669;
+        --badge-inactive-bg: #fee2e2;
+        --badge-inactive-color: #b91c1c;
+        --list-item-bg: #f6faff;
+        --list-item-border: #e0e7ff;
+        --list-item-shadow: 0 2px 8px rgba(37,99,235,0.04);
+        --list-item-hover-bg: #e0e7ff;
+        --list-item-hover-shadow: 0 4px 16px rgba(37,99,235,0.10);
+        --list-item-h4-color: #2563eb;
+        --list-item-p-color: #64748b;
+        --producto-thumbnail-bg: #fff;
+        --producto-thumbnail-border: #2563eb22;
+        --producto-thumbnail-shadow: 0 2px 8px rgba(37,99,235,0.10);
+        --icono-dato-color: #2563eb;
+        --custom-table-th-color: #1e293b;
+        --custom-table-th-bg: #f8fafc;
+        --custom-table-td-color: inherit;
+        --custom-table-td-bg: inherit;
+        --empty-msg-color: #94a3b8;
+        --panel-body-bg: #ffffff;
+    }
+    body.dark-mode {
+        --panel-bg: #1e293b;
+        --panel-shadow: 0 6px 32px rgba(15,23,42,0.25);
+        --panel-header-bg: #0f172a;
+        --panel-header-border: #334155;
+        --panel-title-color: #60a5fa;
+        --panel-title-bg: none;
+        --panel-title-shadow: 0 2px 8px rgba(96,165,250,0.10);
+        --btn-main-bg: rgba(96,165,250,0.12);
+        --btn-main-color: #f1f5f9;
+        --btn-main-border: 1px solid rgba(96,165,250,0.18);
+        --btn-main-hover-bg: rgba(96,165,250,0.22);
+        --btn-main-hover-shadow: 0 4px 16px rgba(96,165,250,0.18);
+        --profile-card-bg: #1e293b;
+        --profile-card-shadow: 0 4px 24px rgba(15,23,42,0.18);
+        --profile-row-border: #33415579;
+        --label-color: #60a5fa;
+        --badge-active-bg: #134e4a;
+        --badge-active-color: #22d3ee;
+        --badge-inactive-bg: #7f1d1d;
+        --badge-inactive-color: #fca5a5;
+        --list-item-bg: #33415500;
+        --list-item-border: #0f172a;
+        --list-item-shadow: 0 2px 8px rgba(15, 23, 42, 0);
+        --list-item-hover-bg: #0f172a;
+        --list-item-hover-shadow: 0 4px 16px rgba(15, 23, 42, 0);
+        --list-item-h4-color: #60a5fa;
+        --list-item-p-color: #cbd5e1;
+        --producto-thumbnail-bg: #334155;
+        --producto-thumbnail-border: #2563eb44;
+        --producto-thumbnail-shadow: 0 2px 8px rgba(15,23,42,0.18);
+        --icono-dato-color: #60a5fa;
+        --custom-table-th-color: #60a5fa;
+        --custom-table-th-bg: #1e293b;
+        --custom-table-td-color: #f1f5f9;
+        --custom-table-td-bg: #334155;
+        --empty-msg-color: #64748b;
+        --panel-body-bg: #1e293b;
+    }
+    .panel-card {
+        background: var(--panel-body-bg);
+        box-shadow: var(--panel-shadow);
+    }
+    .panel-header {
+        background: var(--panel-header-bg);
+        border-bottom: 1px solid var(--panel-header-border);
+    }
+    .panel-header .panel-title,
+    .panel-title {
+        color: var(--panel-title-color) !important;
+        background: var(--panel-title-bg);
+        box-shadow: var(--panel-title-shadow);
+    }
+    .panel-header .btn-main {
+        background: var(--btn-main-bg);
+        color: var(--btn-main-color);
+        border: var(--btn-main-border);
+    }
+    .panel-header .btn-main:hover {
+        background: var(--btn-main-hover-bg);
+        color: #fff;
+        box-shadow: var(--btn-main-hover-shadow);
+    }
+    .profile-card {
+        background: var(--profile-card-bg);
+        box-shadow: var(--profile-card-shadow);
+    }
+    .profile-row {
+        border-bottom: 1px solid var(--profile-row-border);
+    }
+    .label {
+        color: var(--label-color);
+    }
+    .badge.active {
+        background: var(--badge-active-bg);
+        color: var(--badge-active-color);
+    }
+    .badge.inactive {
+        background: var(--badge-inactive-bg);
+        color: var(--badge-inactive-color);
+    }
+    .list-item {
+        background: var(--list-item-bg);
+        border: 1.5px solid var(--list-item-border);
+        box-shadow: var(--list-item-shadow);
+    }
+    .list-item:hover {
+        background: var(--list-item-hover-bg);
+        box-shadow: var(--list-item-hover-shadow);
+    }
+    .list-item h4 {
+        color: var(--list-item-h4-color);
+    }
+    .list-item p {
+        color: var(--list-item-p-color);
+    }
+    .producto-thumbnail {
+        background: var(--producto-thumbnail-bg);
+        border: 2.5px solid var(--producto-thumbnail-border);
+        box-shadow: var(--producto-thumbnail-shadow);
+    }
+    .icono-dato {
+        color: var(--icono-dato-color);
+    }
+    .custom-table th {
+        color: var(--custom-table-th-color);
+        background: var(--custom-table-th-bg);
+    }
+    .custom-table td {
+        color: var(--custom-table-td-color);
+        background: var(--custom-table-td-bg);
+    }
+    .empty-msg {
+        color: var(--empty-msg-color);
+    }
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .panel-card {
+        /* background: #fff; */
+        border-radius: 18px;
+        /* box-shadow: 0 6px 32px rgba(37,99,235,0.10); */
+        margin-bottom: 2rem;
+        padding: 0rem;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    
+    .panel-card:hover {
+        /* box-shadow: 0 12px 40px rgba(37,99,235,0.18); */
+        transform: translateY(-4px) scale(1.01);
+    }
+    
+    .panel-header {
+        position: relative;
+        padding: 1.2rem 1.5rem;
+        /* background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%); */
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-bottom: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        overflow: hidden;
+    }
+    
+    .panel-header .panel-title {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.7em;
+        font-size: 1.25rem;
+    }
+    
+    .panel-header .panel-title .icono-titulo {
+        font-size: 1.4em;
+  
+        opacity: 0.85;
+        margin-right: 0.3em;
+        filter: drop-shadow(0 2px 4px #1e40af44);
+    }
+
+    /* Iconos flotantes en el panel header */
+    .panel-header .header-floating-icons {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .panel-header .header-floating-icons i {
+        position: absolute;
+        font-size: 1.2rem;
+        color: rgba(255, 255, 255, 0);
+        animation: floatIcon 8s infinite linear;
+    }
+
+    .panel-header .header-floating-icons i:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+    .panel-header .header-floating-icons i:nth-child(2) { right: 15%; top: 30%; animation-delay: 2s; }
+    .panel-header .header-floating-icons i:nth-child(3) { left: 25%; bottom: 25%; animation-delay: 4s; }
+    .panel-header .header-floating-icons i:nth-child(4) { right: 20%; bottom: 20%; animation-delay: 1s; }
+    .panel-header .header-floating-icons i:nth-child(5) { left: 40%; top: 40%; animation-delay: 3s; }
+    .panel-header .header-floating-icons i:nth-child(6) { right: 35%; top: 25%; animation-delay: 2.5s; }
+
+    @keyframes floatIcon {
+        0% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(180deg); }
+        100% { transform: translateY(0) rotate(360deg); }
+    }
+    
+    .panel-header .btn-main {
+        position: relative;
+        z-index: 2;
+    
+        color: white;
+        font-weight: 600;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        border-radius: 8px;
+        padding: 0.6em 1.3em;
+        font-size: 1.05rem;
+    }
+    
+    .panel-header .btn-main:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+    }
+    
+    .panel-header .btn-main i {
+        font-size: 1.1em;
+    }
+    
+    .panel-title {
+        font-size: 1.3rem;
+        color: #fff;
+        font-weight: bold;
+        margin: 0;
+        letter-spacing: 0.5px;
+
+        padding: 0.5em 1.2em;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+        display: inline-block;
+    }
+    
+    .panel-body {
+        background-color: var(--panel-body-bg);
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .profile-card {
+
+        border-radius: 12px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+        padding: 0;
+    }
+    
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 1rem;
+    }
+    
+    .profile-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+   
+    }
+    
+    .profile-row:last-child {
+        border-bottom: none;
+    }
+    
+    .label {
+        
+        font-weight: 500;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.3em 0.8em;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    
+    .badge.active {
+        background: #d1fae5;
+        color: #059669;
+    }
+    
+    .badge.inactive {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+    
+    .btn-main, .btn-panel {
+        font-size: 1.05rem;
+        padding: 0.7em 1.7em;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+        font-weight: 600;
+    }
+    
+    .btn-main {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        transition: background 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+    }
+    
+    .btn-main:hover {
+        background: #1746a2;
+        box-shadow: 0 4px 16px rgba(37,99,235,0.18);
+    }
+    
+    .list-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1.3rem;
+    }
+    
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.2rem 1.2rem 1.2rem 1.2rem;
+
+        border-radius: 14px;
+        /* box-shadow: 0 2px 8px rgba(37,99,235,0.04); */
+        transition: box-shadow 0.2s, background 0.2s;
+
+    }
+    
+    .list-item-content {
+        flex: 1;
+    }
+    
+    .list-item h4 {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.13rem;
+        font-weight: bold;
+        letter-spacing: 0.2px;
+    }
+    
+    .list-item p {
+        margin: 0.1rem 0 0 0;
+
+        font-size: 1.01rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+    
+    .producto-thumbnail {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+        border-radius: 12px;
+        /* box-shadow: 0 2px 8px rgba(37,99,235,0.10); */
+        /* border: 2.5px solid #2563eb22; */
+     
+    }
+    
+    .icono-dato {
+        color: #2563eb;
+        font-size: 1.1em;
+        margin-right: 0.2em;
+    }
+    
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .custom-table th {
+        font-weight: 600;
+        color: #1e293b;
+        background: #f8fafc;
+    }
+    
+    .empty-msg {
+        color: #94a3b8;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+            gap: 1rem;
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .dashboard-grid {
+            padding: 0.1rem;
+            gap: 0.5rem;
+        }
+        .panel-card, .profile-card {
+            padding: 0rem !important;
+            border-radius: 8px;
+            font-size: 0.97rem;
+        }
+        .panel-header {
+            padding: 0.7rem !important;
+            margin-bottom: 0.7rem;
+        }
+        .panel-title {
+            font-size: 1rem;
+        }
+        .btn-main {
+            font-size: 0.95rem;
+            padding: 0.6em 1em;
+        }
+        .list-item {
+            padding: 0.7rem;
+            gap: 0.7rem;
+        }
+        .producto-thumbnail {
+            width: 48px;
+            height: 48px;
+        }
+    }
+    
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+</style>
+<div class="dashboard-grid">
+    <!-- Información del Perfil -->
+    <section class="panel-card profile-card">
+        <div class="panel-header">
+            <span class="panel-title"><i class="fas fa-building icono-titulo"></i>Mi Empresa</span>
+            <div class="header-floating-icons">
+                <i class="fas fa-building"></i>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-envelope"></i>
+                <i class="fas fa-phone"></i>
+                <i class="fas fa-map-marker-alt"></i>
+                <i class="fas fa-id-card"></i>
+            </div>
+        </div>
+        <div class="profile-info">
+            <div class="profile-row"><span class="label">Empresa:</span> <span>{{ perfil.empresa }}</span></div>
+            <div class="profile-row"><span class="label">Usuario:</span> <span>{{ user.username }}</span></div>
+            <div class="profile-row"><span class="label">Email:</span> <span>{{ user.email }}</span></div>
+            <div class="profile-row"><span class="label">Teléfono:</span> <span>{{ perfil.telefono }}</span></div>
+            <div class="profile-row"><span class="label">Dirección:</span> <span>{{ perfil.direccion }}</span></div>
+            <div class="profile-row"><span class="label">Suscripción:</span> <span class="badge {% if perfil.estado_suscripcion == 'activa' %}active{% else %}inactive{% endif %}">{{ perfil.estado_suscripcion|title }}</span></div>
+        </div>
+    </section>
+
+    <!-- Productos y Servicios -->
+    <div class="dashboard-content">
+        <!-- Productos -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-box icono-titulo"></i>Productos</span>
+                <div class="header-floating-icons">
+                    <i class="fas fa-box"></i>
+                    <i class="fas fa-tags"></i>
+                    <i class="fas fa-barcode"></i>
+                    <i class="fas fa-warehouse"></i>
+                    <i class="fas fa-dolly"></i>
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <a href="{% url 'crear_producto' %}" class="btn-main"><i class="fas fa-plus"></i> Agregar</a>
+            </div>
+            <div class="panel-body">
+                {% if productos %}
+                    <div class="list-group">
+                        {% for producto in productos %}
+                            <div class="list-item">
+                                {% if producto.imagen_principal %}
+                                    <img src="{{ producto.imagen_principal }}" alt="{{ producto.nombre }}" class="producto-thumbnail">
+                                {% endif %}
+                                <div class="list-item-content">
+                                    <h4>{{ producto.nombre }}</h4>
+                                    <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ producto.precio }}</p>
+                                    <p><i class="fas fa-boxes icono-dato"></i>Stock: {{ producto.stock }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-msg">No hay productos registrados</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Servicios -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-cut icono-titulo"></i>Servicios</span>
+                <div class="header-floating-icons">
+                    <i class="fas fa-cut"></i>
+                    <i class="fas fa-clock"></i>
+                    <i class="fas fa-calendar"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-certificate"></i>
+                    <i class="fas fa-award"></i>
+                </div>
+                <a href="{% url 'crear_servicio' %}" class="btn-main"><i class="fas fa-plus"></i> Agregar</a>
+            </div>
+            <div class="panel-body">
+                {% if servicios %}
+                    <div class="list-group">
+                        {% for servicio in servicios %}
+                            <div class="list-item">
+                                {% if servicio.imagen_principal %}
+                                    <img src="{{ servicio.imagen_principal }}" alt="{{ servicio.nombre }}" class="producto-thumbnail">
+                                {% endif %}
+                                <div class="list-item-content">
+                                    <h4>{{ servicio.nombre }}</h4>
+                                    <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ servicio.precio }}</p>
+                                    <p><i class="fas fa-clock icono-dato"></i>Duración: {{ servicio.duracion }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="empty-msg">No hay servicios registrados</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Pedidos Recientes -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-shopping-cart icono-titulo"></i>Pedidos Recientes</span>
+                <div class="header-floating-icons">
+                    <i class="fas fa-shopping-cart"></i>
+                    <i class="fas fa-receipt"></i>
+                    <i class="fas fa-truck"></i>
+                    <i class="fas fa-box-open"></i>
+                    <i class="fas fa-clipboard-check"></i>
+                    <i class="fas fa-file-invoice-dollar"></i>
+                </div>
+                <a href="{% url 'pedidos' %}" class="btn-main"><i class="fas fa-list"></i> Ver Todos</a>
+            </div>
+            <div class="panel-body">
+                {% if pedidos %}
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pedido in pedidos %}
+                                    <tr>
+                                        <td>#{{ pedido.id }}</td>
+                                        <td>{{ pedido.fecha_pedido|date:"d/m/Y" }}</td>
+                                        <td>
+                                            <span class="badge {{ pedido.estado }}">{{ pedido.estado|title }}</span>
+                                        </td>
+                                        <td>${{ pedido.total }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="empty-msg">No hay pedidos recientes</p>
+                {% endif %}
+            </div>
+        </section>
+    </div>
+</div>
+
+
+{% endblock %} 

@@ -1,0 +1,496 @@
+{% extends 'base.html' %}
+
+{% block title %}Servicios{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-header">
+        <span class="panel-title"><i class="fas fa-cogs icono-titulo"></i>Servicios</span>
+        <div class="header-floating-icons">
+            <i class="fas fa-cogs"></i>
+            <i class="fas fa-tools"></i>
+            <i class="fas fa-wrench"></i>
+            <i class="fas fa-screwdriver"></i>
+            <i class="fas fa-hammer"></i>
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <a href="{% url 'crear_servicio' %}" class="btn-main"><i class="fas fa-plus"></i> Agregar Servicio</a>
+    </div>
+    <div class="panel-content">
+        <div class="section-desc">Aquí podrás gestionar tus servicios.</div>
+
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar en servicios..." style="margin-bottom:1.2rem;max-width:350px;width:100%;">
+
+        <div class="table-responsive">
+            <table class="custom-table" id="serviciosTable">
+                <thead>
+                    <tr>
+                        <th>Imagen<br><input type="text" class="filter-input" disabled style="background:#f6f8fb;"></th>
+                        <th data-sort="nombre" class="sortable">Nombre <span class="sort-icon"></span><br><input type="text" class="filter-input" data-col="1" placeholder="Filtrar"></th>
+                        <th data-sort="precio" class="sortable">Precio <span class="sort-icon"></span><br><input type="number" class="filter-input" data-col="2" placeholder="Filtrar"></th>
+                        <th data-sort="duracion" class="sortable">Duración <span class="sort-icon"></span><br><input type="text" class="filter-input" data-col="3" placeholder="Filtrar"></th>
+                        <th data-sort="categoria" class="sortable">Categoría <span class="sort-icon"></span><br><input type="text" class="filter-input" data-col="4" placeholder="Filtrar"></th>
+                        <th data-sort="estado" class="sortable">Estado <span class="sort-icon"></span><br><select class="filter-input" data-col="5"><option value="">Todos</option><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option></select></th>
+                        <th>Acciones<br><input type="text" class="filter-input" disabled style="background:#f6f8fb;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for servicio in servicios %}
+                    <tr>
+                        <td>
+                            {% if servicio.imagen_principal %}
+                                <img src="{{ servicio.imagen_principal }}" alt="{{ servicio.nombre }}" class="servicio-thumbnail">
+                            {% else %}
+                                <div class="no-image">Sin imagen</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ servicio.nombre }}</td>
+                        <td>${{ servicio.precio }}</td>
+                        <td>{{ servicio.duracion }}</td>
+                        <td>{{ servicio.categoria }}</td>
+                        <td>
+                            <span class="badge {% if servicio.activo %}active{% else %}inactive{% endif %}">
+                                {{ servicio.activo|yesno:"Activo,Inactivo" }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_servicio' servicio.pk %}" class="btn-panel"><i class="fas fa-edit"></i> <span class="btn-text">Editar</span></a>
+                            <a href="{% url 'eliminar_servicio' servicio.pk %}" class="btn-panel btn-danger"><i class="fas fa-trash"></i> <span class="btn-text">Eliminar</span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty-msg">No hay servicios registrados.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+:root {
+    --panel-bg: #fff;
+    --panel-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    --panel-header-bg: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+    --panel-header-color: #fff;
+    --btn-main-bg: rgba(255,255,255,0.1);
+    --btn-main-hover-bg: rgba(255,255,255,0.2);
+    --section-desc-color: #555;
+    --custom-table-th-color: #2563eb;
+    --custom-table-th-bg: #f6f8fb;
+    --empty-msg-color: #555;
+}
+body.dark-mode {
+    --panel-bg: #1e293b;
+    --panel-shadow: 0 4px 12px rgba(15,23,42,0.25);
+    --panel-header-bg: #0f172a;
+    --panel-header-color: #60a5fa;
+    --btn-main-bg: rgba(255,255,255,0.1);
+    --btn-main-hover-bg: rgba(255,255,255,0.2);
+    --section-desc-color: #cbd5e1;
+    --custom-table-th-color: #60a5fa;
+    --custom-table-th-bg: #334155;
+    --empty-msg-color: #64748b;
+}
+/* Estilos del panel con iconos flotantes */
+.panel {
+    margin-bottom: 2rem;
+    background: var(--panel-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--panel-shadow);
+}
+
+.panel-header {
+    position: relative;
+    background: var(--panel-header-bg);
+    color: var(--panel-header-color);
+    padding: 1.5rem;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header .panel-title {
+    position: relative;
+    z-index: 2;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+}
+
+.panel-header .icono-titulo {
+    font-size: 1.1em;
+}
+
+/* Iconos flotantes en el panel header */
+.panel-header .header-floating-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.panel-header .header-floating-icons i {
+    position: absolute;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.13);
+    animation: floatIcon 8s infinite linear;
+}
+
+.panel-header .header-floating-icons i:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+.panel-header .header-floating-icons i:nth-child(2) { right: 15%; top: 30%; animation-delay: 2s; }
+.panel-header .header-floating-icons i:nth-child(3) { left: 25%; bottom: 25%; animation-delay: 4s; }
+.panel-header .header-floating-icons i:nth-child(4) { right: 20%; bottom: 20%; animation-delay: 1s; }
+.panel-header .header-floating-icons i:nth-child(5) { left: 40%; top: 40%; animation-delay: 3s; }
+.panel-header .header-floating-icons i:nth-child(6) { right: 35%; top: 25%; animation-delay: 2.5s; }
+
+@keyframes floatIcon {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(180deg); }
+    100% { transform: translateY(0) rotate(360deg); }
+}
+
+.panel-content {
+    padding: 1.5rem;
+}
+
+/* Botón en el panel header */
+.panel-header .btn-main {
+    position: relative;
+    z-index: 2;
+    background: var(--btn-main-bg);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.panel-header .btn-main:hover {
+    background: var(--btn-main-hover-bg);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.panel-header .btn-main i {
+    font-size: 0.9em;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #2563eb;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+.section-desc {
+    color: var(--section-desc-color);
+    margin-bottom: 2rem;
+}
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.custom-table th, .custom-table td {
+    padding: 0.7em 0.6em;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1rem;
+}
+.custom-table th {
+    color: var(--custom-table-th-color);
+    font-weight: 600;
+    background: var(--custom-table-th-bg);
+}
+.badge {
+    display: inline-block;
+    padding: 0.2em 0.8em;
+    border-radius: 12px;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+.badge.active {
+    background: #d1fae5;
+    color: #059669;
+}
+.badge.inactive {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+.btn-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.3em 0.2em;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-right: 0.5rem;
+    margin-bottom: 10px;
+}
+.btn-panel:hover {
+    background: #1746a2;
+}
+.btn-panel.btn-danger {
+    background: #b91c1c;
+}
+.btn-panel.btn-danger:hover {
+    background: #7f1d1d;
+}
+.empty-msg {
+    color: var(--empty-msg-color);
+    font-size: 1rem;
+    text-align: center;
+    padding: 1.5em 0;
+}
+.btn-main {
+    display: inline-block;
+    padding: 0.7em 1.5em;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-main:hover {
+    background: #1746a2;
+}
+.servicio-thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+.no-image {
+    width: 50px;
+    height: 50px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+.btn-panel .btn-text {
+    display: inline;
+}
+@media (max-width: 1360px) {
+    .section-title {
+        font-size: 1.1rem;
+    }
+    .section-desc {
+        font-size: 0.97rem;
+    }
+    .custom-table th, .custom-table td {
+        padding: 0.4em 0.3em;
+        font-size: 0.93rem;
+    }
+    .servicio-thumbnail, .no-image {
+        width: 36px;
+        height: 36px;
+        font-size: 0.7rem;
+    }
+    .btn-panel, .btn-main {
+        font-size: 0.85rem;
+        padding: 0.7em 0.7em;
+        width: 100%;
+        margin-bottom: 0.4rem;
+        text-align: center;
+        display: block;
+    }
+    .custom-table td:last-child {
+        min-width: 90px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: stretch;
+    }
+    .badge {
+        font-size: 0.85em;
+        padding: 0.15em 0.5em;
+    }
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .btn-main {
+        width: auto;
+        font-size: 0.8rem;
+        margin-top: 0rem;
+    }
+    .btn-panel .btn-text {
+        display: none;
+    }
+    .btn-panel {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        max-width: 36px;
+        max-height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-bottom: 0.4rem;
+    }
+    .custom-table td:last-child {
+        min-width: 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: center;
+    }
+}
+@media (max-width: 600px) {
+    .btn-panel .btn-text {
+        display: none;
+    }
+    .btn-panel {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        min-height: 36px;
+        max-width: 36px;
+        max-height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-bottom: 0.4rem;
+    }
+    .custom-table td:last-child {
+        min-width: 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        align-items: center;
+    }
+}
+.search-input, .filter-input, .custom-table select.filter-input {
+    border: 1.5px solid #d1d5db;
+    border-radius: 7px;
+    padding: 0.45em 0.9em;
+    font-size: 1rem;
+    background: #f8fafc;
+    color: #1e293b;
+    outline: none;
+    margin-top: 0.3em;
+    margin-bottom: 0.1em;
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(37,99,235,0.04);
+    width: 100%;
+    max-width: 100%;
+}
+.search-input:focus, .filter-input:focus, .custom-table select.filter-input:focus {
+    border: 1.5px solid #2563eb;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+}
+.custom-table th {
+    vertical-align: bottom;
+}
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+.sort-icon {
+    font-size: 1.1em;
+    color: #2563eb;
+    margin-left: 0.2em;
+    vertical-align: middle;
+}
+.filter-placeholder {
+    height: 38px;
+    display: block;
+}
+</style>
+
+<script>
+// --- Buscador general ---
+document.getElementById('searchInput').addEventListener('input', function() {
+    const value = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#serviciosTable tbody tr');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+// --- Filtros por columna ---
+document.querySelectorAll('.filter-input').forEach(input => {
+    input.addEventListener('input', filtrarTabla);
+    input.addEventListener('change', filtrarTabla);
+});
+function filtrarTabla() {
+    const filtros = Array.from(document.querySelectorAll('.filter-input')).map(i => i.value.toLowerCase());
+    const rows = document.querySelectorAll('#serviciosTable tbody tr');
+    rows.forEach(row => {
+        let mostrar = true;
+        row.querySelectorAll('td').forEach((td, idx) => {
+            if (filtros[idx-1] && idx > 0 && idx < 6) {
+                if (!td.innerText.toLowerCase().includes(filtros[idx-1])) mostrar = false;
+            }
+        });
+        row.style.display = mostrar ? '' : 'none';
+    });
+}
+// --- Ordenamiento ---
+document.querySelectorAll('.sortable').forEach((th, idx) => {
+    th.addEventListener('click', function() {
+        ordenarTabla(idx);
+        actualizarIconos(idx);
+    });
+});
+let ordenAsc = true;
+function ordenarTabla(col) {
+    const tbody = document.querySelector('#serviciosTable tbody');
+    const filas = Array.from(tbody.querySelectorAll('tr')).filter(r => r.style.display !== 'none');
+    filas.sort((a, b) => {
+        let x = a.children[col].innerText.trim().toLowerCase();
+        let y = b.children[col].innerText.trim().toLowerCase();
+        if (!isNaN(x) && !isNaN(y)) { x = parseFloat(x.replace('$','')); y = parseFloat(y.replace('$','')); }
+        if (x < y) return ordenAsc ? -1 : 1;
+        if (x > y) return ordenAsc ? 1 : -1;
+        return 0;
+    });
+    ordenAsc = !ordenAsc;
+    filas.forEach(f => tbody.appendChild(f));
+}
+function actualizarIconos(col) {
+    document.querySelectorAll('.sort-icon').forEach((icon, idx) => {
+        icon.innerHTML = idx === col-1 ? (ordenAsc ? '▲' : '▼') : '';
+    });
+}
+</script>
+{% endblock %} 

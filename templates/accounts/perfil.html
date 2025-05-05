@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 class="profile-title">Mi Perfil</h2>
+        <div class="profile-info">
+            <div class="info-group">
+                <label>Empresa:</label>
+                <span>{{ perfil.empresa }}</span>
+            </div>
+            <div class="info-group">
+                <label>Usuario:</label>
+                <span>{{ user.username }}</span>
+            </div>
+            <div class="info-group">
+                <label>Email:</label>
+                <span>{{ user.email }}</span>
+            </div>
+            <div class="info-group">
+                <label>Teléfono:</label>
+                <span>{{ perfil.telefono }}</span>
+            </div>
+            <div class="info-group">
+                <label>Dirección:</label>
+                <span>{{ perfil.direccion }}</span>
+            </div>
+            <div class="info-group">
+                <label>Estado de Suscripción:</label>
+                <span class="badge {% if perfil.estado_suscripcion == 'activa' %}active{% else %}inactive{% endif %}">
+                    {{ perfil.estado_suscripcion|title }}
+                </span>
+            </div>
+            {% if perfil.fecha_vencimiento %}
+            <div class="info-group">
+                <label>Fecha de Vencimiento:</label>
+                <span>{{ perfil.fecha_vencimiento|date:"d/m/Y" }}</span>
+            </div>
+            {% endif %}
+        </div>
+        <div class="profile-actions">
+            <a href="#" class="btn-edit">Editar Perfil</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.profile-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 2rem;
+}
+
+.profile-title {
+    color: #2563eb;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.info-group label {
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.info-group span {
+    color: #1e293b;
+    font-size: 1.1rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.3em 0.8em;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.badge.active {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.badge.inactive {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.profile-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-edit {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-edit:hover {
+    background: #1746a2;
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 1rem;
+    }
+    
+    .profile-card {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        padding: 0.7rem;
+    }
+    .profile-card {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    .profile-title {
+        font-size: 1.1rem;
+    }
+    .profile-info {
+        gap: 0.7rem;
+    }
+    .info-group label {
+        font-size: 0.97rem;
+    }
+    .info-group span {
+        font-size: 1rem;
+    }
+    .btn-edit {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+        width: 100%;
+    }
+    .profile-actions {
+        margin-top: 1.2rem;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %} 

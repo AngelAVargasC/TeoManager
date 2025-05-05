@@ -1,0 +1,48 @@
+:root {
+    /* Variables de light mode */
+    --primary-color: #2563eb;
+    --logo-color: #ffffff;
+    --secondary-color: #1e293b;
+    --background-color: #f8fafc;
+    --text-color: #1e293b;
+    --border-color: #e2e8f0;
+    --navbar-bg: #fff;
+    --navbar-text: #1e293b;
+
+    /* Variables de dashboard light */
+    --panel-bg: #fff;
+    --panel-shadow: 0 6px 32px rgba(37,99,235,0.10);
+    --panel-header-bg: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+    --panel-header-border: #e0e7ff;
+    --panel-title-color: #fff;
+    --panel-title-bg: linear-gradient(90deg, #2563eb 60%, #1e40af 100%);
+    --panel-title-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    --btn-main-bg: #2563eb;
+    --btn-main-color: #fff;
+    --btn-main-hover-bg: #1746a2;
+    /* ... añade más variables según necesidad ... */
+}
+
+body.dark-mode {
+    /* Variables de dark mode global */
+    --primary-color: #60a5fa;
+    --logo-color: #60a5fa;
+    --secondary-color: #f1f5f9;
+    --background-color: #0f172a;
+    --text-color: #f1f5f9;
+    --border-color: #334155;
+    --navbar-bg: #1e293b;
+    --navbar-text: #f1f5f9;
+
+    /* Variables de dashboard dark */
+    --panel-bg: #1e293b;
+    --panel-shadow: 0 6px 32px rgba(15,23,42,0.25);
+    --panel-header-bg: #0f172a;
+    --panel-header-border: #334155;
+    --panel-title-color: #60a5fa;
+    --panel-title-bg: none;
+    --panel-title-shadow: 0 2px 8px rgba(96,165,250,0.10);
+    --btn-main-bg: rgba(96,165,250,0.12);
+    --btn-main-color: #f1f5f9;
+    /* ... añade más variables según necesidad ... */
+} 

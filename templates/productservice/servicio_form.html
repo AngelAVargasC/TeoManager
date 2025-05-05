@@ -1,0 +1,349 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="section-title">{{ titulo }}</h2>
+    <p class="section-desc">Completa los datos del servicio.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert">Por favor, corrige los errores en el formulario.</div>
+        {% endif %}
+        {{ form.non_field_errors }}
+        {% for field in form.visible_fields %}
+            {% if field.name != 'activo' %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                {% for error in field.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-group">
+            <label for="id_activo">Activo:</label>
+            <label class="switch">
+                <input type="checkbox" id="id_activo" name="activo" {% if form.instance.activo %}checked{% endif %}>
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="id_imagen">Agregar imágenes (máx. 5):</label>
+            <input type="file" name="imagen" id="id_imagen" multiple {% if imagenes and imagenes|length >= 5 %}disabled{% endif %}>
+            <small>Puedes seleccionar varias imágenes a la vez.</small>
+        </div>
+        <div class="button-group">
+            <button type="submit" class="btn-main"><i class="fas fa-save"></i> Guardar</button>
+            <a href="{% url 'servicios' %}" class="btn-main btn-cancelar"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+    </form>
+
+    {% if imagenes %}
+    <div class="imagenes-actuales">
+        <label>Imágenes actuales:</label>
+        <div class="imagenes-lista">
+            {% for img in imagenes %}
+                <div class="img-thumb">
+                    <img src="{{ img.imagen.url }}" alt="Imagen servicio" />
+                    <form method="post" action="{% url 'eliminar_imagen_servicio' img.id %}" class="form-eliminar-img">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-eliminar-img" title="Eliminar imagen">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                    <form method="post" action="{% url 'marcar_principal_imagen_servicio' img.id %}" class="form-principal-img">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-principal-img" title="Marcar como principal" {% if img.principal %}disabled{% endif %}>
+                            {% if img.principal %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="far fa-star"></i>
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.form-group {
+    width: 100%;
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.3rem;
+    color: #333;
+    font-size: 1rem;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    padding: 0.7em 1em;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border: 1.5px solid #2563eb;
+}
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-main {
+    display: inline-block;
+    padding: 0.7em 1.5em;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-main:hover {
+    background: #1746a2;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 0.7em 1.5em;
+    background: #e2e8f0;
+    color: #1e293b;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.error-message {
+    color: #b91c1c;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+}
+
+.alert {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.imagenes-lista {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+.img-thumb {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+.img-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.form-eliminar-img {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    margin: 0;
+}
+.btn-eliminar-img {
+    background: #b91c1c;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+    z-index: 2;
+    padding: 0;
+}
+.btn-eliminar-img:hover {
+    background: #7f1d1d;
+}
+.form-principal-img {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    margin: 0;
+}
+.btn-principal-img {
+    background: #fbbf24;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 2;
+    padding: 0;
+}
+.btn-principal-img[disabled], .btn-principal-img:disabled {
+    background: #fde68a;
+    color: #b45309;
+    cursor: default;
+}
+
+.btn-main.btn-cancelar {
+    background: #e5e7eb;
+    color: #374151;
+}
+.btn-main.btn-cancelar:hover {
+    background: #cbd5e1;
+}
+
+@media (max-width: 600px) {
+    .form-container {
+        padding: 0.7rem;
+    }
+    .section-title {
+        font-size: 1.1rem;
+    }
+    .section-desc {
+        font-size: 0.97rem;
+    }
+    .form-group label {
+        font-size: 0.97rem;
+    }
+    .form-group input, .form-group textarea, .form-group select {
+        font-size: 0.97rem;
+        padding: 0.5em 0.7em;
+    }
+    .btn-main, .btn-secondary, .btn-main.btn-cancelar {
+        font-size: 0.9rem;
+        padding: 0.7em 1em;
+        width: 100%;
+        margin-bottom: 0.7rem;
+        text-align: center;
+        display: block;
+    }
+    .button-group {
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+.switch input {display:none;}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #e2e8f0;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #2563eb;
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+</style>
+
+<!-- Dark-mode overrides para formulario de servicios -->
+<style>
+body.dark-mode .form-container {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+body.dark-mode .form-group label {
+    color: #f1f5f9;
+}
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea,
+body.dark-mode .form-group select {
+    background: #334155;
+    border-color: #475569;
+    color: #f1f5f9;
+}
+body.dark-mode .btn-secondary {
+    background: #475569;
+    color: #f1f5f9;
+}
+body.dark-mode .alert {
+    background: #7f1d1d;
+    color: #fca5a5;
+}
+body.dark-mode .img-thumb {
+    background: #334155;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.18);
+}
+</style>
+{% endblock %} 

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Administración | TEOmanager{% endblock %}
+
+{% block content %}
+<div class="panel-grid">
+    <!-- Panel de Estadísticas -->
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Estadísticas Generales</h2>
+            <div class="floating-icons">
+                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-users"></i>
+                <i class="fas fa-chart-pie"></i>
+                <i class="fas fa-chart-bar"></i>
+                <i class="fas fa-chart-area"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ total_users }}</span>
+                        <span class="stat-label">Usuarios Totales</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-shield"></i>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ total_admins }}</span>
+                        <span class="stat-label">Administradores</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Acciones Rápidas -->
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Acciones Rápidas</h2>
+            <div class="floating-icons">
+                <i class="fas fa-bolt"></i>
+                <i class="fas fa-magic"></i>
+                <i class="fas fa-wand-magic-sparkles"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-sparkles"></i>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="quick-actions">
+                <a href="{% url 'manage_users' %}" class="action-btn">
+                    <i class="fas fa-users"></i>
+                    <span>Gestionar Usuarios</span>
+                </a>
+                <a href="#" class="action-btn">
+                    <i class="fas fa-box"></i>
+                    <span>Ver Productos</span>
+                </a>
+                <a href="#" class="action-btn">
+                    <i class="fas fa-cogs"></i>
+                    <span>Ver Servicios</span>
+                </a>
+                <a href="#" class="action-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Ver Pedidos</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .stat-card {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.2s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        color: #2563eb;
+    }
+
+    .stat-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #1e293b;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .action-btn {
+        background: #f8fafc;
+        border: none;
+        border-radius: 12px;
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        text-decoration: none;
+        color: #1e293b;
+        transition: all 0.2s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-5px);
+        background: #2563eb;
+        color: white;
+    }
+
+    .action-btn i {
+        font-size: 1.5rem;
+    }
+
+    .action-btn span {
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .quick-actions {
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+    }
+</style>
+
+<!-- Dark-mode overrides para Panel de Administración -->
+<style>
+body.dark-mode .panel {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+body.dark-mode .panel-header {
+    background: #0f172a;
+    color: var(--primary-color);
+}
+body.dark-mode .panel-content {
+    background: var(--panel-body-bg);
+}
+body.dark-mode .floating-icons i {
+    color: var(--primary-color);
+}
+body.dark-mode .stat-card,
+body.dark-mode .quick-actions .action-btn {
+    background: #1e293b;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.25);
+}
+body.dark-mode .stat-card i,
+body.dark-mode .action-btn i {
+    color: var(--primary-color);
+}
+body.dark-mode .stat-value,
+body.dark-mode .action-btn span {
+    color: #f1f5f9;
+}
+body.dark-mode .stat-label {
+    color: #cbd5e1;
+}
+body.dark-mode .action-btn:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+</style>
+
+<!-- Dark-mode override para h3 en dashboard -->
+<style>
+body.dark-mode h3 {
+    color: var(--text-color) !important;
+}
+</style>
+{% endblock %} 

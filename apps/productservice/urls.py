@@ -15,4 +15,6 @@ urlpatterns = [
     path('servicios/imagen/eliminar/<int:imagen_id>/', views.eliminar_imagen_servicio, name='eliminar_imagen_servicio'),
     path('servicios/imagen/principal/<int:imagen_id>/', views.marcar_principal_imagen_servicio, name='marcar_principal_imagen_servicio'),
     path('pedidos/', views.pedidos, name='pedidos'),
+    path('producto/<int:pk>/', views.detalle_producto, name='detalle_producto'),
+    path('servicio/<int:pk>/', views.detalle_servicio, name='detalle_servicio'),
 ] 

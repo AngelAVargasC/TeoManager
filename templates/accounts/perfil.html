@@ -171,5 +171,39 @@
         justify-content: center;
     }
 }
+
+body.dark-mode .profile-card {
+  background: var(--panel-bg);
+  color: var(--panel-title-color);
+  box-shadow: var(--panel-shadow);
+}
+body.dark-mode .profile-title {
+  color: var(--panel-title-color);
+}
+body.dark-mode .info-group label {
+  color: var(--label-color);
+}
+body.dark-mode .info-group span {
+  color: var(--panel-title-color);
+}
+body.dark-mode .badge.active {
+  background: var(--badge-active-bg);
+  color: var(--badge-active-color);
+}
+body.dark-mode .badge.inactive {
+  background: var(--badge-inactive-bg);
+  color: var(--badge-inactive-color);
+}
+body.dark-mode .btn-edit {
+  background: var(--btn-main-bg);
+  color: var(--btn-main-color);
+}
+body.dark-mode .btn-edit:hover {
+  background: var(--btn-main-hover-bg);
+}
+body.dark-mode .profile-container {
+  /* background: var(--panel-body-bg); */
+  background-color: transparent;
+}
 </style>
 {% endblock %} 

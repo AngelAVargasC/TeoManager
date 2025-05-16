@@ -163,7 +163,7 @@
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+            gap: .5rem;
             animation: fadeInUp 0.6s ease-out 0.2s backwards;
         }
 
@@ -181,6 +181,7 @@
 
         .input-group {
             position: relative;
+            border: 0px !important;   
         }
 
         .input-group i {
@@ -762,6 +763,61 @@
             color: var(--primary);
             transform: scale(1.1);
         }
+        /* -------------------------------------- */
+        /* Estilo para “Te registras como…?”      */
+        /* -------------------------------------- */
+        fieldset.form-group.full {
+        border: none;               /* quitamos el borde por defecto */
+        margin-bottom: 1.5rem;
+        padding: 0;
+        }
+
+        fieldset.form-group.full legend {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+        }
+
+        /* contenedor de las opciones */
+        .radio-group {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 0.5rem;
+        border: 2px solid var(--input-border);
+        border-radius: 10px;
+        background: var(--input-bg);
+        padding: 5px;
+        background-color: transparent !important;
+        }
+
+        /* cada opción */
+        .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        color: var(--text-primary);
+        font-size: 1rem;
+        }
+
+        /* radio nativo coloreado */
+        .radio-option input[type="radio"] {
+        accent-color: var(--primary);
+        width: 1rem;
+        height: 1rem;
+        background-color: transparent;
+      
+        }
+        .empresa-field{
+            grid-column: span 2;
+        }
+        .usuario-field{
+            grid-column: span 2;
+        }
     </style>
 </head>
 <body>
@@ -838,111 +894,108 @@
 
             <form method="post">
                 {% csrf_token %}
+                {{ form.non_field_errors }}
+              
                 <div class="form-grid">
+                  <!-- Campos comunes -->
+                  <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Usuario</label>
+                    <div class="input-group">
+                      <i class="fas fa-user"></i>
+                      {{ form.username }}
+                    </div>
+                    {{ form.username.errors }}
+                  </div>
+              
+                  <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Correo Electrónico</label>
+                    <div class="input-group">
+                      <i class="fas fa-envelope"></i>
+                      {{ form.email }}
+                    </div>
+                    {{ form.email.errors }}
+                  </div>
+              
+                  <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Contraseña</label>
+                    <div class="input-group">
+                      <i class="fas fa-lock"></i>
+                      {{ form.password1 }}
+                    </div>
+                    {{ form.password1.errors }}
+                  </div>
+              
+                  <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">Confirmar Contraseña</label>
+                    <div class="input-group">
+                      <i class="fas fa-lock"></i>
+                      {{ form.password2 }}
+                    </div>
+                    {{ form.password2.errors }}
+                  </div>
+              
+                  <!-- Tipo de cuenta -->
+                  <fieldset class="form-group full">
+                    <legend>{{ form.tipo_cuenta.label }}</legend>
+                    <div class="input-group radio-group">
+                      {{ form.tipo_cuenta }}
+                    </div>
+                    {{ form.tipo_cuenta.errors }}
+                  </fieldset>
+              
+                  <!-- Bloque Usuario -->
+                  <div class="usuario-field">
                     <div class="form-group">
-                        <label for="id_username">Usuario</label>
-                        <div class="input-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" name="username" id="id_username" class="form-input {% if form.username.errors %}input-error{% endif %}" placeholder="Ingresa tu nombre de usuario" value="{{ form.username.value|default:'' }}" required>
-                        </div>
-                        {% if form.username.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.username.errors.0 }}
-                        </div>
-                        {% endif %}
+                      <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+                      <div class="input-group">
+                        <i class="fas fa-id-card"></i>
+                        {{ form.first_name }}
+                      </div>
+                      {{ form.first_name.errors }}
+                    </div>
+                    <div class="form-group">
+                      <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+                      <div class="input-group">
+                        <i class="fas fa-id-card"></i>
+                        {{ form.last_name }}
+                      </div>
+                      {{ form.last_name.errors }}
+                    </div>
+                  </div>
+              
+                  <!-- Bloque Empresa -->
+                  <div class="empresa-field">
+                    <div class="form-group">
+                      <label for="{{ form.empresa.id_for_label }}">Empresa</label>
+                      <div class="input-group">
+                        <i class="fas fa-building"></i>
+                        {{ form.empresa }}
+                      </div>
+                      {{ form.empresa.errors }}
                     </div>
 
-                    <div class="form-group">
-                        <label for="id_email">Correo Electrónico</label>
-                        <div class="input-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" name="email" id="id_email" class="form-input {% if form.email.errors %}input-error{% endif %}" placeholder="ejemplo@correo.com" value="{{ form.email.value|default:'' }}" required>
-                        </div>
-                        {% if form.email.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.email.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_password1">Contraseña</label>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" name="password1" id="id_password1" class="form-input {% if form.password1.errors %}input-error{% endif %}" placeholder="Mínimo 8 caracteres" required>
-                        </div>
-                        {% if form.password1.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.password1.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_password2">Confirmar Contraseña</label>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" name="password2" id="id_password2" class="form-input {% if form.password2.errors %}input-error{% endif %}" placeholder="Repite tu contraseña" required>
-                        </div>
-                        {% if form.password2.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.password2.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_empresa">Empresa</label>
-                        <div class="input-group">
-                            <i class="fas fa-building"></i>
-                            <input type="text" name="empresa" id="id_empresa" class="form-input {% if form.empresa.errors %}input-error{% endif %}" placeholder="Nombre de tu empresa" value="{{ form.empresa.value|default:'' }}" required>
-                        </div>
-                        {% if form.empresa.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.empresa.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_telefono">Teléfono</label>
-                        <div class="input-group">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" name="telefono" id="id_telefono" class="form-input {% if form.telefono.errors %}input-error{% endif %}" placeholder="Número de contacto" value="{{ form.telefono.value|default:'' }}" required>
-                        </div>
-                        {% if form.telefono.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.telefono.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="id_direccion">Dirección</label>
-                        <div class="input-group">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <input type="text" name="direccion" id="id_direccion" class="form-input {% if form.direccion.errors %}input-error{% endif %}" placeholder="Dirección completa" value="{{ form.direccion.value|default:'' }}" required>
-                        </div>
-                        {% if form.direccion.errors %}
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            {{ form.direccion.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
+                  </div>
                 </div>
-
+                <div class="form-group">
+                    <label for="{{ form.telefono.id_for_label }}">Teléfono</label>
+                    <div class="input-group">
+                      <i class="fas fa-phone"></i>
+                      {{ form.telefono }}
+                    </div>
+                    {{ form.telefono.errors }}
+                </div>
+                <div class="form-group full">
+                    <label for="{{ form.direccion.id_for_label }}">Dirección</label>
+                    <div class="input-group">
+                      <i class="fas fa-map-marker-alt"></i>
+                      {{ form.direccion }}
+                    </div>
+                    {{ form.direccion.errors }}
+                </div>
                 <button type="submit" class="register-button">
-                    <i class="fas fa-user-plus"></i>
-                    Crear Cuenta
+                  <i class="fas fa-user-plus"></i> Crear Cuenta
                 </button>
-            </form>
+              </form>
 
             <div class="login-link">
                 ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia sesión</a>
@@ -977,6 +1030,17 @@
                 themeIcon.classList.replace(oldIcon, newIcon);
             });
         });
+        document.addEventListener('DOMContentLoaded', function(){
+            function toggleCampos(){
+                const tipo = document.querySelector('input[name="tipo_cuenta"]:checked').value;
+                document.querySelector('.usuario-field').style.display = tipo==='usuario'? '':'none';
+                document.querySelector('.empresa-field').style.display = tipo==='empresa'? '':'none';
+            }
+            document.querySelectorAll('input[name="tipo_cuenta"]').forEach(radio=>{
+                radio.addEventListener('change', toggleCampos);
+            });
+            toggleCampos();
+            });
     </script>
 </body>
 </html> 

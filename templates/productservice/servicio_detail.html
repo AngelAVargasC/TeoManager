@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ servicio.nombre }} | TEOmanager{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Estilos para detalle de servicio profesional */
+:root {
+  --detail-padding: 2rem;
+}
+.service-layout {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: var(--detail-padding);
+}
+.service-gallery {
+  flex: 1 1 400px;
+  max-width: 600px;
+}
+.service-gallery .main-img {
+  width: 100%;
+  max-width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  box-shadow: var(--panel-shadow);
+  transition: transform 0.3s ease;
+  display: block;
+}
+.service-gallery .main-img:hover {
+  transform: scale(1.02);
+}
+.service-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+.service-thumbnails img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+.service-thumbnails img:hover,
+.service-thumbnails img.selected {
+  border-color: var(--accent-color);
+}
+.service-details {
+  flex: 1 1 300px;
+  background: var(--secondary-bg);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: var(--panel-shadow);
+  color: var(--text-color);
+}
+.service-details h2 {
+  margin-top: 0;
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+.service-details p {
+  line-height: 1.6;
+  margin: 1rem 0;
+  word-break: break-word;
+  white-space: pre-line;
+}
+.service-details .price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+.service-details .duration {
+  font-size: 1rem;
+  color: var(--label-color);
+}
+.service-details .btn-primary {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-decoration: none;
+}
+.service-details .btn-primary:hover {
+  background: var(--btn-hover-bg);
+}
+.similar-services-section {
+  margin: var(--detail-padding);
+}
+.similar-services-section h3 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.similar-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
+.similar-item {
+  background: var(--secondary-bg);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: var(--panel-shadow);
+  transition: transform 0.3s;
+}
+.similar-item:hover {
+  transform: translateY(-5px);
+}
+.similar-item img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0.4rem;
+}
+.similar-item p { margin: 0.5rem 0; }
+@media (max-width: 768px) {
+  .service-layout { flex-direction: column; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="service-layout">
+  <div class="service-gallery">
+    {% if servicio.imagen_principal %}
+      <img id="main-image" src="{{ servicio.imagen_principal }}" alt="{{ servicio.nombre }}" class="main-img">
+    {% else %}
+      <div class="main-img" style="background: var(--label-color); height:300px; display:flex;align-items:center;justify-content:center;color:#fff;">Sin imagen</div>
+    {% endif %}
+    {% if images %}
+      <div class="service-thumbnails">
+        {% for img in images %}
+          <img src="{{ img.imagen.url }}" alt="{{ servicio.nombre }}" onclick="document.getElementById('main-image').src=this.src;">
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  <div class="service-details">
+    <h2>{{ servicio.nombre }}</h2>
+    <p>{{ servicio.descripcion|linebreaks }}</p>
+    <p class="price">${{ servicio.precio }}</p>
+    <p class="duration">Duración: {{ servicio.duracion }}</p>
+    <a href="#" class="btn-primary"><i class="fas fa-bookmark"></i> Reservar Servicio</a>
+    <div class="seller-info" style="margin-top:1.5rem; padding:0.75rem 1rem; background:var(--bg-light); border-radius:0.5rem; box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; align-items:center; gap:0.7rem;">
+      <i class="fas fa-store" style="color:var(--primary-color);"></i>
+      <span>Vendido por:</span>
+      <a href="{% url 'company_page' servicio.usuario.id %}" style="font-weight:600; color:var(--primary-color); text-decoration:underline;">
+        {{ servicio.usuario.userprofile.empresa }}
+      </a>
+    </div>
+  </div>
+</div>
+{% if similar_services %}
+<div class="similar-services-section">
+  <h3>Servicios relacionados</h3>
+  <div class="similar-services-grid">
+    {% for ss in similar_services %}
+      <div class="similar-item">
+        <a href="{% url 'detalle_servicio' ss.pk %}">
+          {% if ss.imagen_principal %}
+            <img src="{{ ss.imagen_principal }}" alt="{{ ss.nombre }}">
+          {% else %}
+            <div class="main-img" style="background: var(--label-color); height:120px; display:flex;align-items:center;justify-content:center;color:#fff;">Sin imagen</div>
+          {% endif %}
+          <p>{{ ss.nombre }}</p>
+          <p class="price">${{ ss.precio }}</p>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %} 

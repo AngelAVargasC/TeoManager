@@ -1,0 +1,326 @@
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --accent: #22c55e;
+    --bg-light: #f8fafc;
+    --bg-alt: #eef4ff;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --shadow-light: 0 8px 32px rgba(37,99,235,0.08);
+    --shadow-heavy: 0 16px 48px rgba(37,99,235,0.12);
+    --transition-speed: 0.3s;
+  }
+
+  /* Overrides para Dark Mode */
+body.dark-mode {
+  --bg-light: #1e293b;
+  --bg-alt: #334155;
+  --card-bg: #24303f;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --shadow-light: 0 8px 32px rgba(0,0,0,0.25);
+  --shadow-heavy: 0 16px 48px rgba(0,0,0,0.35);
+}
+
+  /* HERO PRINCIPAL */
+  .template-hero {
+    position: relative;
+    height: 500px;
+    background: url('{{ landing.hero_image }}') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .template-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.1));
+  }
+  .hero-overlay {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    animation: fadeInUp var(--transition-speed) ease-out;
+  }
+  .hero-overlay h1 {
+    font-size: 3.5rem;
+    margin: 0;
+    letter-spacing: 1px;
+  }
+  .hero-overlay p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin-top: .5rem;
+    line-height: 1.5;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* BARRA DE BÚSQUEDA */
+  .catalog-controls {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: -2rem auto 2rem;
+    max-width: 1200px;
+    padding: 0 1rem;
+  }
+  .catalog-controls input,
+  .catalog-controls select {
+    flex: 1;
+    min-width: 200px;
+    padding: .8rem 1rem;
+    border: 1px solid var(--text-muted);
+    border-radius: .75rem;
+    background: #fff;
+    transition: box-shadow var(--transition-speed);
+  }
+  .catalog-controls input:focus,
+  .catalog-controls select:focus {
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    outline: none;
+  }
+  .btn-search {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: .8rem 1.2rem;
+    border-radius: .75rem;
+    cursor: pointer;
+    transition: background var(--transition-speed), transform var(--transition-speed);
+  }
+  .btn-search:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
+  /* SECCIONES */
+  .template-section {
+    padding: 4rem 1rem;
+    background: var(--bg-light);
+  }
+  .template-section.alt {
+    background: var(--bg-alt);
+  }
+  .template-section h2 {
+    text-align: center;
+    font-size: 2.25rem;
+    color: var(--primary);
+    margin-bottom: 2rem;
+  }
+
+  /* GRID DE TARJETAS */
+  .cards-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    transition: box-shadow var(--transition-speed), transform var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;         /* elimina subrayado del propio <a> */
+    color: inherit;   
+  }
+  .card:hover {
+    box-shadow: var(--shadow-heavy);
+    transform: translateY(-5px);
+  }
+
+  .card-image {
+    height: 180px;
+    background: #f0f4ff;
+    overflow: hidden;
+  }
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-speed);
+  }
+  .card:hover .card-image img {
+    transform: scale(1.05);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    
+  }
+  .card-body h3 {
+    margin: 0 0 .5rem;
+    font-size: 1.25rem;
+    color: var(--text-main);
+ 
+  }
+  .card-body p {
+    flex: 1;
+    color: var(--text-muted);
+    font-size: .95rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  
+  }
+  .card-body .price {
+    font-weight: bold;
+    color: var(--accent);
+    font-size: 1.15rem;
+
+  }
+
+  /* BOTONES CATÁLOGO COMPLETO */
+  .btn-full-catalog {
+    background: var(--accent);
+    color: #fff;
+    padding: .6rem 1.2rem;
+    border-radius: .75rem;
+    text-decoration: none;
+    transition: background var(--transition-speed), transform var(--transition-speed);
+  }
+  .btn-full-catalog:hover {
+    background: #19a24d;
+    transform: translateY(-2px);
+  }
+  /* y además quita cualquier subrayado de los hijos */
+.card * {
+  text-decoration: none !important;
+}
+
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .template-hero { height: 350px; }
+    .hero-overlay h1 { font-size: 2.5rem; }
+    .template-section { padding: 3rem 1rem; }
+    .cards-grid { gap: 1rem; }
+  }
+</style>
+
+<div class="landing-template2">
+  <!-- HERO -->
+  <section class="template-hero">
+    <div class="hero-overlay">
+      <h1>{{ landing.titulo }}</h1>
+      <p>{{ landing.descripcion }}</p>
+    </div>
+  </section>
+
+  <!-- BUSCADOR -->
+  <section class="template-section alt">
+    <div class="catalog-controls">
+      <input type="text" id="searchInput" placeholder="Buscar productos o servicios…"/>
+      <select id="categoryFilter">
+        <option value="">Todas las categorías</option>
+        {% for prod in products %}<option>{{ prod.categoria }}</option>{% endfor %}
+      </select>
+      <button id="searchBtn" class="btn-search"><i class="fas fa-search"></i> Buscar</button>
+    </div>
+  </section>
+
+  <!-- PRESENTACIÓN -->
+  {% if landing.contenido %}
+  <section class="template-section">
+    <h2>Presentación</h2>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-body">{{ landing.contenido|safe }}</div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- RESUMEN -->
+  <section class="template-section alt">
+    <h2>Resumen</h2>
+    <div class="cards-grid">
+      <div class="card"><div class="card-body"><h3>Total de Productos</h3><p>{{ products|length }}</p></div></div>
+      <div class="card"><div class="card-body"><h3>Total de Servicios</h3><p>{{ services|length }}</p></div></div>
+      <div class="card"><div class="card-body"><h3>Clientes Satisfechos</h3><p>+1,234</p></div></div>
+    </div>
+    <div class="cards-grid" style="margin-top:2rem;justify-content:center">
+      <a href="#all-products" class="btn-full-catalog">Ver Productos</a>
+      <a href="#all-services" class="btn-full-catalog">Ver Servicios</a>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS DESTACADOS -->
+  {% if products %}
+  <section class="template-section">
+    <div class="section-header" style="max-width:1200px;margin:0 auto 2rem;display:flex;justify-content:space-between;align-items:center">
+      <h2>Nuestros Productos</h2>
+      <a href="{% url 'company_catalog_full' user_id=landing.usuario.id %}" class="btn-full-catalog">Catálogo Completo</a>
+    </div>
+    <div class="cards-grid" id="productsGrid">
+      {% for product in products %}
+      <a href="{% url 'detalle_producto' product.pk %}" class="card product-card" data-category="{{ product.categoria }}">
+        <div class="card-image">
+          {% if product.imagen_principal %}<img src="{{ product.imagen_principal }}" alt="{{ product.nombre }}"/>{% endif %}
+        </div>
+        <div class="card-body">
+          <h3>{{ product.nombre }}</h3>
+          <p>{{ product.descripcion|truncatechars:80 }}</p>
+          <div class="price">$ {{ product.precio }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- SERVICIOS DESTACADOS -->
+  {% if services %}
+  <section class="template-section alt">
+    <div class="section-header" style="max-width:1200px;margin:0 auto 2rem;display:flex;justify-content:space-between;align-items:center">
+      <h2>Nuestros Servicios</h2>
+      <a href="{% url 'company_catalog_full' user_id=landing.usuario.id %}" class="btn-full-catalog">Catálogo Completo</a>
+    </div>
+    <div class="cards-grid" id="servicesGrid">
+      {% for srv in services %}
+      <a href="{% url 'detalle_servicio' srv.pk %}" class="card service-card" data-category="{{ srv.categoria }}">
+        <div class="card-image">
+          {% if srv.imagen_principal %}<img src="{{ srv.imagen_principal }}" alt="{{ srv.nombre }}"/>{% endif %}
+        </div>
+        <div class="card-body">
+          <h3>{{ srv.nombre }}</h3>
+          <p>{{ srv.descripcion|truncatechars:80 }}</p>
+          <div class="price">$ {{ srv.precio }}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filter = () => {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const cat  = document.getElementById('categoryFilter').value;
+      document.querySelectorAll('.product-card, .service-card').forEach(c => {
+        const name = c.querySelector('h3').textContent.toLowerCase();
+        const desc = c.querySelector('p').textContent.toLowerCase();
+        const ok = (name.includes(term)||desc.includes(term)) && (!cat||c.dataset.category===cat);
+        c.style.display = ok ? '' : 'none';
+      });
+    };
+    document.getElementById('searchBtn').onclick = filter;
+    document.getElementById('searchInput').onkeyup = e => { if(e.key==='Enter') filter(); };
+  });
+</script>

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Carrito de Compras{% endblock %}
+{% block body_attrs %} data-dashboard="true"{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Estilos del carrito de compras */
+.custom-table th, .custom-table td {
+    padding: 1rem;
+    text-align: left;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.cart-total {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-header">
+        <h2>Carrito de Compras</h2>
+        <div class="floating-icons">
+            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-boxes"></i>
+            <i class="fas fa-tags"></i>
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+    </div>
+    <div class="panel-content">
+        {% if productos_carrito %}
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in productos_carrito %}
+                        <tr>
+                            <td>
+                                <div class="cart-item">
+                                    {% if item.producto.imagen_principal %}
+                                        <img src="{{ item.producto.imagen_principal }}" alt="{{ item.producto.nombre }}">
+                                    {% else %}
+                                        <i class="fas fa-box" style="font-size:2rem;color:var(--label-color);"></i>
+                                    {% endif %}
+                                    <span>{{ item.producto.nombre }}</span>
+                                </div>
+                            </td>
+                            <td>${{ item.producto.precio }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.subtotal }}</td>
+                            <td>
+                                <a href="{% url 'remove_from_cart' item.producto.pk %}" class="btn-panel btn-danger">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="cart-total">
+                <h3>Total: ${{ total }}</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-panel btn-success">
+                        <i class="fas fa-credit-card"></i> Proceder a pagar
+                    </button>
+                </form>
+            </div>
+        {% else %}
+            <p>No hay productos en tu carrito.</p>
+        {% endif %}
+        <div style="margin-top:1.5rem;">
+            <a href="{% url 'home' %}" class="btn-panel">
+                <i class="fas fa-arrow-left"></i> Volver al catálogo
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

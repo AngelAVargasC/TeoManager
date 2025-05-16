@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Productos{% endblock %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cards.css' %}">
+<style>
+  /* Variables de color (desde tu :root) */
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary: #64748b;
+    --background: #f8fafc;
+    --main-bg: #ffffff;
+    --text-color: #1e293b;
+    --accent-color: #22c55e;
+    --border-color: #e2e8f0;
+    --panel-shadow: 0 4px 20px rgba(37,99,235,0.15);
+  }
+
+  /* Hero banner */
+  .hero-banner {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: .75rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .hero-banner .cta {
+    max-width: 50%;
+  }
+  .hero-banner h1 {
+    font-size: 2.5rem;
+    margin-bottom: .5rem;
+  }
+  .hero-banner p {
+    font-size: 1.1rem;
+    opacity: .9;
+  }
+  .hero-banner .hero-img {
+    max-width: 40%;
+  }
+  .hero-banner .hero-img img {
+    width: 100%;
+    border-radius: .5rem;
+    box-shadow: var(--panel-shadow);
+  }
+
+  /* Carrusel de tarjetas destacadas */
+  .feature-carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: .5rem;
+    margin-bottom: 2rem;
+  }
+  .feature-carousel::-webkit-scrollbar {
+    height: 6px;
+  }
+  .feature-carousel::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+  }
+  .feature-card {
+    scroll-snap-align: start;
+    flex: 0 0 200px;
+    background: var(--main-bg);
+    border-radius: .75rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: var(--panel-shadow);
+    transition: transform .2s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+  }
+  .feature-card i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: .5rem;
+  }
+  .feature-card small {
+    display: block;
+    margin-top: .5rem;
+    color: var(--secondary);
+    font-size: .9rem;
+  }
+
+  /* Barra de filtros */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+  .filter-bar .search-input,
+  .filter-bar .filter-select {
+    flex: 1;
+    min-width: 180px;
+    padding: .7rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: .5rem;
+    background: var(--main-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+  }
+  .filter-bar button {
+    background: var(--primary);
+    border: none;
+    color: white;
+    padding: .7rem 1.2rem;
+    border-radius: .5rem;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .filter-bar button:hover {
+    background: var(--primary-dark);
+  }
+
+  /* Catálogo de productos */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+  }
+  .product-card {
+    background: var(--main-bg);
+    border-radius: .75rem;
+    overflow: hidden;
+    box-shadow: var(--panel-shadow);
+    transition: transform .3s;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+  }
+  .product-image {
+    height: 200px;
+    background: var(--background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+  .product-info {
+    padding: 1rem;
+  }
+  .product-info h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--primary);
+  }
+
+  .product-info small {
+    display: block;
+    margin-top: .25rem;
+    color: var(--secondary);
+  }
+  .product-actions {
+    display: flex;
+    gap: .5rem;
+    margin-top: 1rem;
+  }
+  .product-actions a {
+    flex: 1;
+    text-align: center;
+    padding: .6rem;
+    border-radius: .5rem;
+    text-decoration: none;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    transition: all .2s;
+  }
+  .product-actions a.btn-success {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+  }
+  .product-actions a:hover {
+    background: var(--primary);
+    color: white;
+  }
+  .product-actions a.btn-success:hover {
+    background: #1fa84b;
+  }
+
+  /* Mensaje vacío */
+  .empty-msg {
+    text-align: center;
+    color: var(--secondary);
+    font-size: 1.1rem;
+    padding: 2rem 0;
+  }
+</style>
+{% endblock %}
+
+
+{% block content %}
+  <div class="consumer-home">
+    <!-- Hero banner -->
+    <div class="hero-banner">
+      <div class="cta">
+        <h1>Descubre miles de productos</h1>
+        <p>Encuentra lo que necesitas con las mejores ofertas y envíos rápidos.</p>
+        <a href="#catalog" class="btn-panel" >Ver catálogo</a>
+      </div>
+      <div class="hero-img">
+        <img src="{% static 'img/hero-product.png' %}" alt="Promoción" />
+      </div>
+    </div>
+
+    <!-- Carrusel de secciones destacadas -->
+    <div class="feature-carousel">
+      <div class="feature-card">
+        <i class="fas fa-tags"></i>
+        <strong>Ofertas del día</strong>
+        <small>Hasta 50% de descuento</small>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-star"></i>
+        <strong>Lo más vendido</strong>
+        <small>Top productos</small>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-truck"></i>
+        <strong>Envío gratis</strong>
+        <small>En miles de artículos</small>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-star-half-alt"></i>
+        <strong>Nuevos lanzamientos</strong>
+        <small>Última tecnología</small>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-clipboard-list"></i>
+        <strong>Menos de $500</strong>
+        <small>Precios bajos</small>
+      </div>
+    </div>
+
+    <!-- Barra de búsqueda y filtros -->
+    <div class="filter-bar" id="catalog">
+      <form method="get" class="d-flex align-items-center gap-2" style="flex:1">
+        <input type="text" name="q" value="{{ search_query }}" placeholder="¿Qué buscas?" class="search-input">
+        <select name="category" class="filter-select">
+          <option value="">Todas las categorías</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {% if cat == category_filter %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+
+    <!-- Catálogo de productos -->
+    {% if productos %}
+      <div class="products-grid">
+        {% for product in productos %}
+          <div class="product-card">
+            <div class="product-image">
+              {% if product.imagen_principal %}
+                <img src="{{ product.imagen_principal }}" alt="{{ product.nombre }}">
+              {% else %}
+                <i class="fas fa-box"></i>
+              {% endif %}
+            </div>
+            <div class="product-info">
+              <h4>{{ product.nombre }}</h4>
+              <div class="product-category">{{ product.categoria }}</div>
+              <div class="product-details">
+                <span class="price">${{ product.precio }}</span>
+                <span class="stock {% if product.stock < 10 %}low-stock{% endif %}"><i class="fas fa-cubes"></i> {{ product.stock }}</span>
+              </div>
+              <div class="product-actions">
+                <a href="{% url 'detalle_producto' product.pk %}" class="btn-panel">Ver producto</a>
+                <a href="{% url 'add_to_cart' product.pk %}" class="btn-success"><i class="fas fa-cart-plus"></i></a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty-msg">No hay productos disponibles.</p>
+    {% endif %}
+  </div>
+{% endblock %}

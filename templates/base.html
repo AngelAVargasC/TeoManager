@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/global-theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard-theme.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+   
     <style>
         :root {
             --primary-color: #2563eb;
@@ -61,7 +62,7 @@
             background: var(--navbar-bg);
             color: var(--navbar-text);
             box-shadow: var(--navbar-shadow);
-            padding: 1rem 2rem;
+            padding: 0.5rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -529,6 +530,125 @@
             gap: 2rem;
             margin: 2rem 0;
         }
+
+        /* Carrito preview en navbar */
+        .cart-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cart-preview-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+        .dropdown-divider {
+            border-top: 1px solid var(--border-color);
+            margin: 0.5rem 0;
+        }
+
+        /* Botones */
+        .btn-panel {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+        .btn-panel:hover { background: var(--primary-color); opacity: 0.9; }
+        .btn-panel.btn-success { background: var(--secondary-color); }
+        .btn-panel.btn-danger { background: #ef4444; }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+        }
+
+        /* Inputs y selects */
+        .search-input, .filter-input, .filter-select {
+            border: 1px solid var(--border-color);
+            background: var(--main-bg);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Tarjetas */
+        .product-card, .panel-card {
+            background: var(--main-bg);
+            border-radius: 0.75rem;
+            box-shadow: var(--panel-shadow);
+            transition: transform 0.2s;
+        }
+        .product-card:hover, .panel-card:hover { transform: translateY(-4px); }
+
+        /* Navbar responsiva: solo iconos en móvil, texto como tooltip */
+        .nav-link .nav-label {
+          margin-left: 8px;
+          transition: opacity .2s, visibility .2s;
+          background: var(--bg-card);
+          color: var(--text-main);
+          padding: 4px 10px;
+          border-radius: 6px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+          white-space: nowrap;
+          position: absolute;
+          left: 50%;
+          top: 120%;
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          z-index: 20;
+          font-size: .95em;
+          min-width: max-content;
+        }
+        .nav-link {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        @media (max-width: 768px) {
+          .nav-link .nav-label,
+          .nav-link span:not(.badge) {
+            display: none !important;
+          }
+          .nav-link .badge {
+            position: absolute;
+            top: 4px;
+            right: 2px;
+            z-index: 2;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+            font-size: 0.78rem;
+            padding: 0.18rem 0.48rem;
+            background: var(--primary-color);
+          }
+        }
+        @media (min-width: 769px) {
+          .nav-link .nav-label {
+            position: static;
+            opacity: 1;
+            visibility: visible;
+            background: none;
+            color: inherit;
+            box-shadow: none;
+            padding: 0;
+            margin-left: 8px;
+            pointer-events: auto;
+          }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -575,6 +695,7 @@
                 </a>
             </li>
             {% endif %}
+            {% if user_profile and user_profile.tipo_cuenta == 'empresa' %}
             <li class="sidebar-item">
                 <a href="{% url 'productos' %}" class="sidebar-link {% if request.resolver_match.url_name == 'productos' %}active{% endif %}">
                     <i class="fas fa-box"></i>
@@ -587,6 +708,7 @@
                     <span>Servicios</span>
                 </a>
             </li>
+            {% endif %}
             <li class="sidebar-item">
                 <a href="{% url 'pedidos' %}" class="sidebar-link {% if request.resolver_match.url_name == 'pedidos' %}active{% endif %}">
                     <i class="fas fa-shopping-cart"></i>
@@ -599,6 +721,22 @@
                     <span>Perfil</span>
                 </a>
             </li>
+            {% if user_profile and user_profile.tipo_cuenta == 'usuario' %}
+            <li class="sidebar-item">
+                <a href="{% url 'marketplace' %}" class="sidebar-link {% if request.resolver_match.url_name == 'marketplace' %}active{% endif %}">
+                    <i class="fas fa-store"></i>
+                    <span>Marketplace</span>
+                </a>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated and user_profile and user_profile.tipo_cuenta == 'empresa' %}
+            <li class="sidebar-item">
+                <a href="{% url 'create_landing_page' %}" class="sidebar-link {% if request.resolver_match.url_name == 'create_landing_page' %}active{% endif %}">
+                    <i class="fas fa-globe"></i>
+                    <span>Crear Página</span>
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </nav>
     <div class="sidebar-overlay"></div>
@@ -613,19 +751,44 @@
                 <i class="fas fa-moon"></i>
             </button>
             <div class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link nav-tooltip">
                     <i class="fas fa-bell"></i>
-                    <span>Notificaciones</span>
-
+                    <span class="nav-label">Notificaciones</span>
                 </a>
             </div>
-
             <div class="nav-item">
-
-                <a href="#" class="nav-link">
-
+                <a href="{% url 'cart' %}" class="nav-link nav-tooltip">
+                    <i class="fas fa-shopping-cart"></i>
+                    {% if cart_count > 0 %}
+                        <span class="badge">{{ cart_count }}</span>
+                    {% endif %}
+                    <span class="nav-label">Carrito</span>
+                </a>
+                <div class="dropdown-menu">
+                    {% if cart_preview %}
+                        {% for item in cart_preview %}
+                            <div class="cart-preview-item dropdown-item">
+                                {% if item.producto.imagen_principal %}
+                                    <img src="{{ item.producto.imagen_principal }}" alt="{{ item.producto.nombre }}">
+                                {% else %}
+                                    <i class="fas fa-box" style="font-size:1.5rem;color:var(--label-color);"></i>
+                                {% endif %}
+                                <span>{{ item.producto.nombre }} x{{ item.cantidad }}</span>
+                            </div>
+                        {% endfor %}
+                        <hr class="dropdown-divider">
+                        <a href="{% url 'cart' %}" class="dropdown-item text-center">
+                            Ver más...
+                        </a>
+                    {% else %}
+                        <span class="dropdown-item">Tu carrito está vacío</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link nav-tooltip">
                     <i class="fas fa-user"></i>
-                    <span>Hola, {{ user.username }}</span>
+                    <span class="nav-label">Hola, {{ user.username }}</span>
                 </a>
                 <div class="dropdown-menu">
                     <a href="{% url 'perfil' %}" class="dropdown-item">
@@ -636,7 +799,6 @@
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión</span>
                     </a>
-
                 </div>
             </div>
         </div>
@@ -748,5 +910,7 @@
             });
         });
     </script>
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html> 

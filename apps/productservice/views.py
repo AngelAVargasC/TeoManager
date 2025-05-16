@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.productservice.models import Producto, Servicio, Pedido, ImagenProducto, ImagenServicio
 from apps.productservice.forms import ProductoForm, ServicioForm
+from django.http import JsonResponse, Http404
+from apps.accounts.models import PerfilUsuario
 
 # Create your views here.
 
@@ -182,3 +184,44 @@ def marcar_principal_imagen_servicio(request, imagen_id):
         imagen.save()
         messages.success(request, '¡Imagen marcada como principal!')
     return redirect('editar_servicio', pk=servicio.pk)
+
+# Vista de detalle de un producto público
+@login_required(login_url='login')
+def detalle_producto(request, pk):
+    producto = get_object_or_404(Producto, pk=pk, activo=True)
+    # Si es empresa, solo puede ver sus productos
+    if request.user.is_authenticated:
+        perfil = PerfilUsuario.objects.get(usuario=request.user)
+        if perfil.tipo_cuenta == 'empresa' and producto.usuario != request.user:
+            raise Http404('No tienes acceso a este producto')
+    images = producto.imagenes.all()
+    similar_products = Producto.objects.filter(categoria=producto.categoria, activo=True).exclude(pk=pk)[:4]
+    # Navegación: productos anterior y siguiente
+    all_products = list(Producto.objects.filter(activo=True).order_by('id'))
+    index = next((i for i, p in enumerate(all_products) if p.pk == producto.pk), None)
+    prev_product = all_products[index-1] if index is not None and index > 0 else None
+    next_product = all_products[index+1] if index is not None and index < len(all_products)-1 else None
+    return render(request, 'productservice/producto_detail.html', {
+        'producto': producto,
+        'images': images,
+        'similar_products': similar_products,
+        'prev_product': prev_product,
+        'next_product': next_product,
+    })
+
+# Vista de detalle de un servicio público
+@login_required(login_url='login')
+def detalle_servicio(request, pk):
+    servicio = get_object_or_404(Servicio, pk=pk, activo=True)
+    # Si es empresa, solo puede ver sus servicios
+    if request.user.is_authenticated:
+        perfil = PerfilUsuario.objects.get(usuario=request.user)
+        if perfil.tipo_cuenta == 'empresa' and servicio.usuario != request.user:
+            raise Http404('No tienes acceso a este servicio')
+    images = servicio.imagenes.all()
+    similar_services = Servicio.objects.filter(categoria=servicio.categoria, activo=True).exclude(pk=pk)[:4]
+    return render(request, 'productservice/servicio_detail.html', {
+        'servicio': servicio,
+        'images': images,
+        'similar_services': similar_services,
+    })

@@ -486,7 +486,12 @@
         overflow-x: auto;
     }
 
+    /* Links de lista clicables */
+    .list-item-link { text-decoration: none; color: inherit; display: block; }
+    .list-item-link .list-item { cursor: pointer; }
+
 </style>
+{% if user_profile.tipo_cuenta == 'empresa' %}
 <div class="dashboard-grid">
     <!-- Información del Perfil -->
     <section class="panel-card profile-card">
@@ -531,16 +536,18 @@
                 {% if productos %}
                     <div class="list-group">
                         {% for producto in productos %}
-                            <div class="list-item">
-                                {% if producto.imagen_principal %}
-                                    <img src="{{ producto.imagen_principal }}" alt="{{ producto.nombre }}" class="producto-thumbnail">
-                                {% endif %}
-                                <div class="list-item-content">
-                                    <h4>{{ producto.nombre }}</h4>
-                                    <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ producto.precio }}</p>
-                                    <p><i class="fas fa-boxes icono-dato"></i>Stock: {{ producto.stock }}</p>
+                            <a href="{% url 'detalle_producto' producto.pk %}" class="list-item-link">
+                                <div class="list-item">
+                                    {% if producto.imagen_principal %}
+                                        <img src="{{ producto.imagen_principal }}" alt="{{ producto.nombre }}" class="producto-thumbnail">
+                                    {% endif %}
+                                    <div class="list-item-content">
+                                        <h4>{{ producto.nombre }}</h4>
+                                        <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ producto.precio }}</p>
+                                        <p><i class="fas fa-boxes icono-dato"></i>Stock: {{ producto.stock }}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         {% endfor %}
                     </div>
                 {% else %}
@@ -567,16 +574,18 @@
                 {% if servicios %}
                     <div class="list-group">
                         {% for servicio in servicios %}
-                            <div class="list-item">
-                                {% if servicio.imagen_principal %}
-                                    <img src="{{ servicio.imagen_principal }}" alt="{{ servicio.nombre }}" class="producto-thumbnail">
-                                {% endif %}
-                                <div class="list-item-content">
-                                    <h4>{{ servicio.nombre }}</h4>
-                                    <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ servicio.precio }}</p>
-                                    <p><i class="fas fa-clock icono-dato"></i>Duración: {{ servicio.duracion }}</p>
+                            <a href="{% url 'detalle_servicio' servicio.pk %}" class="list-item-link">
+                                <div class="list-item">
+                                    {% if servicio.imagen_principal %}
+                                        <img src="{{ servicio.imagen_principal }}" alt="{{ servicio.nombre }}" class="producto-thumbnail">
+                                    {% endif %}
+                                    <div class="list-item-content">
+                                        <h4>{{ servicio.nombre }}</h4>
+                                        <p><i class="fas fa-dollar-sign icono-dato"></i>Precio: ${{ servicio.precio }}</p>
+                                        <p><i class="fas fa-clock icono-dato"></i>Duración: {{ servicio.duracion }}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         {% endfor %}
                     </div>
                 {% else %}
@@ -632,6 +641,8 @@
         </section>
     </div>
 </div>
-
+{% elif user_profile.tipo_cuenta == 'usuario' %}
+    {% include 'accounts/home_consumer.html' %}
+{% endif %}
 
 {% endblock %} 
